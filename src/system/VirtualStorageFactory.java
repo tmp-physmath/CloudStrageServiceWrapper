@@ -3,7 +3,8 @@ package system;
 
 import java.io.File;
 
-import storage.cloudStorage.LocalStorage;
+import storage.IStorage;
+import storage.cloudStorage.DropBoxStorage;
 import storage.virtualStorage.VirtualStorage;
 import storage.virtualStorage.VirtualStorageTestImpl;
 
@@ -12,7 +13,7 @@ public class VirtualStorageFactory {
 	protected VirtualStorageFactory(){
 	}
 	public VirtualStorage create(File config){
-		LocalStorage strage = new LocalStorage("~/storage");
+		IStorage strage = new DropBoxStorage();
 		return new VirtualStorageTestImpl(strage);
 		
 	}
