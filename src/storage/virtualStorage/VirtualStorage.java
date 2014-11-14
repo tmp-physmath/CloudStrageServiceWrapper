@@ -8,7 +8,9 @@ import storage.IStorage;
 
 public abstract class VirtualStorage  implements IStorage{
 	protected List<IStorage> storageList_;
-	
+	VirtualStorage(){
+		storageList_ = new ArrayList<IStorage>();
+	}
 	@Override
 	public boolean isAuthed(){
 		for(IStorage storage : storageList_){

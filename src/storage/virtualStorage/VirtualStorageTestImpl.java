@@ -2,14 +2,13 @@
 package storage.virtualStorage;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import storage.IStorage;
 
 public class VirtualStorageTestImpl extends VirtualStorage{
 	
 	public VirtualStorageTestImpl(IStorage storage){
-		storageList_ = new ArrayList<IStorage>();
+		super();
 		storageList_.add(storage);
 	}
 	@Override

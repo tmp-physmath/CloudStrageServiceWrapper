@@ -12,12 +12,12 @@ public class VirtualStorageFactory {
 	protected VirtualStorageFactory(){
 	}
 	public VirtualStorage create(File config){
-		LocalStorage str = new LocalStorage("~/storage");
-		return new VirtualStorageTestImpl(str);
+		LocalStorage strage = new LocalStorage("~/storage");
+		return new VirtualStorageTestImpl(strage);
 		
 	}
 	
-	public VirtualStorageFactory getInstance(){
+	static public VirtualStorageFactory getInstance(){
 		return factory_;
 	}
 	

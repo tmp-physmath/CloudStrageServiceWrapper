@@ -1,7 +1,9 @@
 
 package system;
 
-import storage.virtualStorage.command.DoNothing;
+import java.io.File;
+
+import storage.virtualStorage.command.Add;
 import storage.virtualStorage.command.IVirtualStorageCommand;
 
 
@@ -14,6 +16,6 @@ public class CommandParser {
 		return parser_;
 	}
 	public IVirtualStorageCommand createCommand(String[] command){
-		return new DoNothing();
+		return new Add(new File(command[1]),command[2]);
 	}
 }

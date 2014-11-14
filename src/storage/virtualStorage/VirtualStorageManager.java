@@ -6,7 +6,7 @@ import system.CommandParser;
 
 
 public class VirtualStorageManager{
-	static private VirtualStorage storage_;
+	static private VirtualStorage storage_ = null;
 	
 	private VirtualStorageManager(){
 		super();
@@ -16,7 +16,7 @@ public class VirtualStorageManager{
 	static public VirtualStorageManager getInstance(){
 		return instance;
 	}
-	static void setVirtualStorage(VirtualStorage storage){
+	static public void setVirtualStorage(VirtualStorage storage){
 		storage_ = storage;
 	}
 	public String operate(String[] args){
