@@ -2,6 +2,7 @@
 package storage;
 
 import java.io.File;
+import java.util.List;
 
 import storage.virtualStorage.VirtualFile;
 
@@ -13,4 +14,6 @@ public interface IStorage {
 	long getEmptySize();
 	int refreshAuth();
 	boolean isAuthed();	
+	List<VirtualFile> fileList();
+	boolean exist(VirtualFile file);
 }

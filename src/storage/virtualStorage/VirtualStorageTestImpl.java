@@ -7,31 +7,27 @@ public class VirtualStorageTestImpl extends VirtualStorage{
 
 	@Override
 	public int add(File file) {
-		// TODO 自動生成されたメソッド・スタブ
-		return 0;
+		return storageList_.get(0).add(file);
 	}
 
 	@Override
 	public int delete(VirtualFile file) {
-		// TODO 自動生成されたメソッド・スタブ
-		return 0;
+		return storageList_.get(0).delete(file);
 	}
 
 	@Override
 	public int rename(VirtualFile target, String name) {
-		// TODO 自動生成されたメソッド・スタブ
-		return 0;
+		return storageList_.get(0).rename(target, name);
 	}
 
 	@Override
 	public int download(VirtualFile target) {
-		// TODO 自動生成されたメソッド・スタブ
-		return 0;
+		return storageList_.get(0).download(target);
 	}
 
 	@Override
 	public long getEmptySize() {
-		// TODO 自動生成されたメソッド・スタブ
-		return 0;
+		return storageList_.get(0).getEmptySize();
 	}
+
 }

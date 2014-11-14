@@ -1,6 +1,7 @@
 
 package storage.virtualStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import storage.IStorage;
@@ -23,5 +24,24 @@ public abstract class VirtualStorage  implements IStorage{
 			ret += storage.refreshAuth();
 		}
 		return ret;
+	}
+	
+	@Override
+	public List<VirtualFile> fileList() {
+		List<VirtualFile> ret = new ArrayList<VirtualFile>();
+		for(IStorage storage : storageList_){
+			ret.addAll(storage.fileList());
+		}
+		return ret;
+	}
+
+	@Override
+	public boolean exist(VirtualFile file) {
+		for(IStorage storage : storageList_){
+			if(storage.exist(file)){
+				return true;
+			}
+		}
+		return false;
 	}
 }
