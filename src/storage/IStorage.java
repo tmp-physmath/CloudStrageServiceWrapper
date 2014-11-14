@@ -7,7 +7,7 @@ import java.util.List;
 import storage.virtualStorage.VirtualFile;
 
 public interface IStorage {
-	int add(File file);
+	int add(File file, String name);
 	int delete(VirtualFile file);
 	int rename(VirtualFile target, String name);
 	int download(VirtualFile target);
