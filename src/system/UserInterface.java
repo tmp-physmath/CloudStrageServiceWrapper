@@ -12,8 +12,10 @@ public class UserInterface {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		System.out.println("running test\n");
 		VirtualStorage vstorage = VirtualStorageFactory.getInstance().create(null);
-		VirtualStorageManager.setVirtualStorage(vstorage);
+		VirtualStorageManager.getInstance().setVirtualStorage(vstorage);
 		String ret = VirtualStorageManager.getInstance().operate(args);
 		System.out.println(ret);
 	}

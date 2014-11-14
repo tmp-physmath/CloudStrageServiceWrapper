@@ -35,22 +35,22 @@ public class LocalStorage implements IStorage {
 	        e.printStackTrace();
 	    } catch (IOException e) {
 	        e.printStackTrace();
-	    } finally {
-	        if (ifc != null) {
-	            try {
-	                // 入力チャネルを close します。
-	                ifc.close();
-	            } catch (IOException e) {
-	            }
-	        }
-	        if (ofc != null) {
-	            try {
-	                // 出力チャネルを close します。
-	                ofc.close();
-	            } catch (IOException e) {
-	            }
-	        }
-	    }
+	    } 
+        if (ifc != null) {
+            try {
+                // 入力チャネルを close します。
+                ifc.close();
+            } catch (IOException e) {
+            }
+        }
+        if (ofc != null) {
+            try {
+                // 出力チャネルを close します。
+                ofc.close();
+            } catch (IOException e) {
+            }
+        }
+    
 	    return 0;
 	}
 

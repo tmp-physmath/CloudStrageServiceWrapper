@@ -6,17 +6,17 @@ import system.CommandParser;
 
 
 public class VirtualStorageManager{
-	static private VirtualStorage storage_ = null;
+	private VirtualStorage storage_ = null;
 	
 	private VirtualStorageManager(){
 		super();
 	}
 	
-	static private VirtualStorageManager instance;
+	static private VirtualStorageManager instance = new VirtualStorageManager();
 	static public VirtualStorageManager getInstance(){
 		return instance;
 	}
-	static public void setVirtualStorage(VirtualStorage storage){
+	public void setVirtualStorage(VirtualStorage storage){
 		storage_ = storage;
 	}
 	public String operate(String[] args){
