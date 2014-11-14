@@ -49,7 +49,7 @@ public class DropBoxStorage implements IStorage {
 		} catch (Exception e) {
 			return EXCEPTION;
 		}
-		return 1;
+		return SUCCESS_PROCESS;
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class DropBoxStorage implements IStorage {
 	}
 
 	@Override
-	public long getEmptySize() {
+	public long getFreeSpace() {
 		return 0;
 	}
 

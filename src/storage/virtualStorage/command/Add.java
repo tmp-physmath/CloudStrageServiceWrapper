@@ -22,6 +22,7 @@ public class Add implements IVirtualStorageCommand {
 	
 	@Override
 	public String exec(VirtualStorage target) {
+		//TODO パラメータチェック
 		int resultCode = target.add(targetFile, name);
 		
 		StringBuilder sb = new StringBuilder();
