@@ -18,6 +18,7 @@ import java.util.Scanner;
 
 import storage.IStorage;
 import storage.virtualStorage.VirtualFile;
+import system.IAuthorization;
 
 import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxAuthFinish;
@@ -84,8 +85,7 @@ public class DropBoxStorage implements IStorage {
 	}
 
 	@Override
-	public int download(VirtualFile target) {
-		File distinct = new File("");
+	public int download(VirtualFile target, File distinct) {
 		try (FileOutputStream outputStream = new FileOutputStream(distinct)) {
 			getClient().getFile("/" + target.path_, null, outputStream);
 		} catch (IOException e) {
@@ -180,5 +180,11 @@ public class DropBoxStorage implements IStorage {
 		System.out.println("アクセストークン:" + accessToken);
 		
 		this.accessToken = accessToken;
+	}
+
+	@Override
+	public List<IAuthorization> getAuthorization() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
 	}
 }
