@@ -12,7 +12,7 @@ public interface IStorage {
 	int delete(VirtualFile file);
 	int rename(VirtualFile target, String name);
 	int download(VirtualFile target, File distinct);
-	long getEmptySize();
+	long getFreeSpace();
 	int refreshAuth();
 	boolean isAuthed();	
 	List<VirtualFile> fileList();

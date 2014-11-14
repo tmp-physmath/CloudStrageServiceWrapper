@@ -2,8 +2,10 @@
 package storage.virtualStorage;
 
 import java.io.File;
+import java.util.List;
 
 import storage.IStorage;
+import system.IAuthorization;
 
 public class VirtualStorageTestImpl extends VirtualStorage{
 	
@@ -27,13 +29,18 @@ public class VirtualStorageTestImpl extends VirtualStorage{
 	}
 
 	@Override
-	public int download(VirtualFile target) {
-		return storageList_.get(0).download(target);
+	public int download(VirtualFile target, File distinct) {
+		return storageList_.get(0).download(target,distinct);
 	}
 
 	@Override
-	public long getEmptySize() {
-		return storageList_.get(0).getEmptySize();
+	public long getFreeSpace() {
+		return storageList_.get(0).getFreeSpace();
+	}
+	@Override
+	public List<IAuthorization> getAuthorization() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

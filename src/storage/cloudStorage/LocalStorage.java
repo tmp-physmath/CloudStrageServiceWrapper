@@ -10,6 +10,7 @@ import java.util.List;
 
 import storage.IStorage;
 import storage.virtualStorage.VirtualFile;
+import system.IAuthorization;
 
 public class LocalStorage implements IStorage {
 	private String dir_;
@@ -66,12 +67,7 @@ public class LocalStorage implements IStorage {
 	}
 
 	@Override
-	public int download(VirtualFile target) {
-		return 0;
-	}
-
-	@Override
-	public long getEmptySize() {
+	public long getFreeSpace() {
 		return Long.MAX_VALUE;
 	}
 
@@ -93,6 +89,18 @@ public class LocalStorage implements IStorage {
 	@Override
 	public boolean exist(VirtualFile file) {
 		return false;
+	}
+
+	@Override
+	public int download(VirtualFile target, File distinct) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<IAuthorization> getAuthorization() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
