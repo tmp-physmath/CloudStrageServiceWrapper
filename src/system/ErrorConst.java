@@ -3,7 +3,7 @@ package system;
 public class ErrorConst {
 	public static final int SUCCESS_PROCESS = 1;
 	
-	public static final int FAILD_PROCESS = 1 << 1;
+	public static final int FAILED_PROCESS = 1 << 1;
 
 	public static final int CANNOT_AUTH = 1 << 2; 
 	

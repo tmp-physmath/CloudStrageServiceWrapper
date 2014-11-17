@@ -1,7 +1,6 @@
 package storage.virtualStorage.command;
 
 import java.io.File;
-import java.io.IOException;
 
 import storage.virtualStorage.VirtualStorage;
 import system.ErrorConst;
@@ -22,23 +21,27 @@ public class Add implements IVirtualStorageCommand {
 	
 	@Override
 	public String exec(VirtualStorage target) {
-		//TODO パラメータチェック
+		//パラメータチェック
+		if (!targetFile.exists()) {
+			return "指定したファイルは存在しません。";
+		}
+		
+		if (VirtualStorageCommandUtil.isInvalidFileName(name)) {
+			return "指定したファイル名は使えません。";
+		}
+		
 		int resultCode = target.add(targetFile, name);
-		
-		StringBuilder sb = new StringBuilder();
-		
-		if((resultCode & ErrorConst.CANNOT_AUTH) != 0) {
-			sb.append("認証に失敗しました。\n");
-		}
-		
-		if ((resultCode & ErrorConst.IOEXCEPTION) != 0) {
-			sb.append("入出力の際に" + IOException.class.getCanonicalName() + "が発生しました。\n");
-		}
-		
+
+		StringBuilder resultText = new StringBuilder();
+		//共通コマンドを設定
+		resultText.append(VirtualStorageCommandUtil.getCommonCommand(resultCode));
+
 		if (resultCode == ErrorConst.SUCCESS_PROCESS) {
-			sb.append("正常にアップロードされました。\n");
+			resultText.append("正常にアップロードされました。");
+		} else {
+			resultText.append("アップロードに失敗しました。");
 		}
-		return sb.toString();
+		return resultText.toString();
 	}
 
 }
