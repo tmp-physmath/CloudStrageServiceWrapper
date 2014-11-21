@@ -25,7 +25,7 @@ public class Delete implements IVirtualStorageCommand {
 			//結果の文字列
 			StringBuilder sb = new StringBuilder();
 			sb.append(VirtualStorageCommandUtil.getCommonCommand(result));
-			sb.append((result & ErrorConst.SUCCESS_PROCESS) != 0 ? "削除が正常に完了しました。" : "削除に失敗しました。");
+			sb.append((result == ErrorConst.SUCCESS_PROCESS)  ? "削除が正常に完了しました。" : "削除に失敗しました。");
 			return sb.toString();
 		} else {
 			return "対象のファイルが存在しません。";

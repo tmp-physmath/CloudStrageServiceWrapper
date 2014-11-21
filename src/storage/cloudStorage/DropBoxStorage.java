@@ -12,8 +12,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import storage.IStorage;
 import storage.virtualStorage.VirtualFile;
@@ -45,7 +47,7 @@ public class DropBoxStorage implements IStorage {
 	
 	String userId;
 	
-	DbxAccountInfo account;
+	DbxAccountInfo account = null;
 	
 	public static void main(String[] args) throws DbxException {
 		DropBoxStorage storage = new DropBoxStorage("nanmiken");
@@ -55,9 +57,64 @@ public class DropBoxStorage implements IStorage {
 	}
 	
 	public DropBoxStorage(String userId) {
+		System.out.println("アカウント名:" + userId + "の認証を開始します。");
+		
 		this.userId = userId;
 		
-		AuthPropertiesManager.getInstance().get(userId, "");
+		try {
+			//プロパティ情報を取得
+			Map<String, String> map = AuthPropertiesManager.getInstance().get(userId, STORAGE_NAME);
+			
+			//マップがとれなければ初回認証を行う必要があるのでnullにしておく
+			if (map == null) {
+				accessToken = null;
+				return;
+			}
+			//アクセストークンをセットする(nullでも問題なし)
+			accessToken = map.get("accessToken");
+			
+			//アクセストークンが存在した時はアクセストークンが正しいか調べる
+			if (accessToken != null) {
+				setAccountInfo();
+			}
+		} catch (Exception e) {
+			accessToken = null;
+			account = null;
+			e.printStackTrace();
+		} finally {
+			//アクセストークンとアカウント情報どちらがnullならもう片方も自動的にnullになる
+			if (accessToken == null) {
+				account = null;
+			}
+			if (account == null) {
+				accessToken = null;
+			}
+			
+			if (accessToken != null) {
+				System.out.println("認証に成功しました。アカウント名:" + userId);
+			} else {
+				System.out.println("認証に失敗しました。アカウント名" + userId);
+			}
+		}
+	}
+
+	/**
+	 * 認証されているか確認し、認証されていればアカウント情報をセットする。
+	 * 認証が成功しない原因は「アクセストークンが間違っている」「ネットワークに接続していない」などが挙げられます。
+	 * 
+	 * 認証に失敗したときはアカウント情報とアクセストークンの値はnullになります。
+	 * @throws DbxException
+	 */
+	protected void setAccountInfo() throws DbxException {
+		//一旦利用者情報を取得してステータスコードが200でないなら認証されていないとする
+		DbxClient client = getClient();
+		Handle handle = new Handle();
+		DbxAccountInfo accountInfo = client.doPost(DbxHost.Default.api, "1/account/info", null, null, handle);
+		
+		//認証に成功していればアカウント情報をセットする
+		if (handle.isAuth() && accountInfo != null) {
+			account = accountInfo;
+		}
 	}
 	
 	@Override
@@ -142,8 +199,15 @@ public class DropBoxStorage implements IStorage {
 
 	@Override
 	public long getFreeSpace() {
-		
-		return 0;
+		try {
+			if (!assertAuth()) {
+				return 0;
+			}
+			return account.quota.normal;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
 	}
 
 	@Override
@@ -155,32 +219,35 @@ public class DropBoxStorage implements IStorage {
 	public boolean isAuthed() {
 		try {
 			//アクセストークンがnullの時は強制的に認証されていないとする
-			if (accessToken == null) {
+			if (accessToken == null || account == null) {
 				return false;
 			}
 			
-			//一旦利用者情報を取得してステータスコードが200でないなら認証されていないとする
-			DbxClient client = getClient();
-			Handle handle = new Handle();
-			DbxAccountInfo accountInfo = client.doPost(DbxHost.Default.api, "1/account/info", null, null, handle);
-			
-			//accessTokenが正しいか確認
-			if (accountInfo == null || !handle.isAuth()) {
-				return false;
-			}
+			//コンストラクタで確認しているのでアクセストークンが正しいかどうかは確認ここでは確認しない
+			//TODO あとで消します
+//			
+//			//一旦利用者情報を取得してステータスコードが200でないなら認証されていないとする
+//			DbxClient client = getClient();
+//			Handle handle = new Handle();
+//			DbxAccountInfo accountInfo = client.doPost(DbxHost.Default.api, "1/account/info", null, null, handle);
+//			
+//			//accessTokenが正しいか確認
+//			if (accountInfo == null || !handle.isAuth()) {
+//				return false;
+//			}
 			
 			//ユーザのアカウントが正しいか確認
-			if (!accountInfo.displayName.equals(userId)) {
+			if (!account.displayName.equals(userId)) {
 				return false;
 			}
 			return true;
-		} catch (DbxException e) {
+		} catch (Exception e) {
 			return false;
 		}
 	}
 	
 	class Handle extends DbxRequestUtil.ResponseHandler<DbxAccountInfo> {
-		boolean isAuth;
+		private boolean isAuth;
 		
 		@Override
 		public DbxAccountInfo handle(Response response) throws DbxException {
@@ -325,15 +392,21 @@ public class DropBoxStorage implements IStorage {
 		}
 
 		@Override
-		public boolean auth(String key) {
-			if (key == null) {
+		public boolean auth(String accessToken) {
+			if (accessToken == null) {
 				return false;
 			}
 			
 			try {
+				//アクセストークンの情報をセットする
+				HashMap<String, String> map = new HashMap<String, String>();
+				map.put("accessToken", accessToken);
+				AuthPropertiesManager.getInstance().set(userId, STORAGE_NAME, map);
+				
+				//認証を行う
 				DbxAppInfo appInfo = new DbxAppInfo(APP_KEY, APP_SECRET);
 				DbxAuthFinish authFinish;
-				authFinish = new DbxWebAuthNoRedirect(getConfig(), appInfo).finish(key);
+				authFinish = new DbxWebAuthNoRedirect(getConfig(), appInfo).finish(accessToken);
 				accessToken = authFinish.accessToken;
 			} catch (DbxException e) {
 				return false;

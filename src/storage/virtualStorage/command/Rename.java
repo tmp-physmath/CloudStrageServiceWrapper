@@ -29,7 +29,7 @@ public class Rename implements IVirtualStorageCommand{
 		}
 		
 		//ファイルの存在チェック
-		if (target.exist(targetFile)) {
+		if (!target.exist(targetFile)) {
 			return "クラウド上に選択したファイルは存在しません。";
 		}
 		
@@ -39,7 +39,7 @@ public class Rename implements IVirtualStorageCommand{
 		//共通コメントを設定する
 		sb.append(VirtualStorageCommandUtil.getCommonCommand(result));
 		
-		if ((result & ErrorConst.SUCCESS_PROCESS) != 0) {
+		if (result == ErrorConst.SUCCESS_PROCESS) {
 			sb.append("リネームに成功しました。");
 		} else {
 			sb.append("リネームに失敗しました。");

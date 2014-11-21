@@ -24,8 +24,9 @@ public class CommandParser {
 		return parser_;
 	}
 
-	static HashMap<String, Integer> cmdMap = new HashMap<String, Integer>();
+	static HashMap<String, Integer> cmdMap;
 	{
+		cmdMap = new HashMap<String, Integer>();
 		cmdMap.put("add", 3);
 		cmdMap.put("delete", 2);
 		cmdMap.put("pull", 3);
