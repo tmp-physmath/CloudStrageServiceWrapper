@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import storage.IStorage;
+import system.IAuthorization;
 
 public abstract class VirtualStorage  implements IStorage{
 	protected List<IStorage> storageList_ = new ArrayList<IStorage>();
@@ -32,6 +33,16 @@ public abstract class VirtualStorage  implements IStorage{
 			ret.addAll(storage.fileList());
 		}
 		return ret;
+	}	
+	
+	@Override
+	public List<IAuthorization> getAuthorization() {
+		ArrayList<IAuthorization> authList = new ArrayList<IAuthorization>();
+		
+		for (IStorage storage : storageList_) {
+			authList.addAll(storage.getAuthorization());
+		}
+		return authList;
 	}
 
 }

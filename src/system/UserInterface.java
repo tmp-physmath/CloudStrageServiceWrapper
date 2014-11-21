@@ -13,6 +13,8 @@ public class UserInterface<T> {
 
 	
 	public static void main(String[] args) {
+		Logger.start();
+		
 		if(args.length == 0){
 			System.out.println("コマンドライン引数が足りません");
 			return;
@@ -38,6 +40,8 @@ public class UserInterface<T> {
 		VirtualStorageManager.getInstance().setVirtualStorage(vstorage);
 		String result = VirtualStorageManager.getInstance().operate(args_list);
 		System.out.println(result);
+		
+		Logger.printLog("実行時間:" + Logger.getTotalTime() + "ms");
 	}
 	
 	public static LinkedList<String> StringToLinkedList (String[] args){
