@@ -13,7 +13,7 @@ public class VirtualStorageFactory {
 	protected VirtualStorageFactory(){
 	}
 	public VirtualStorage create(File config){
-		IStorage strage = new DropBoxStorage();
+		IStorage strage = new DropBoxStorage("USER_ID");
 		return new VirtualStorageTestImpl(strage);
 		
 	}
