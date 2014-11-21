@@ -1,7 +1,7 @@
 
 package storage.virtualStorage;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import storage.virtualStorage.command.IVirtualStorageCommand;
 import system.CommandParser;
@@ -21,8 +21,11 @@ public class VirtualStorageManager{
 	public void setVirtualStorage(VirtualStorage storage){
 		storage_ = storage;
 	}
-	public String operate(ArrayList<String> argList){
+	public String operate(List<String> argList){
 		IVirtualStorageCommand command = CommandParser.getInstance().createCommand(argList);
+		if(command == null){
+			return "コマンド書式が間違っています。入力し直しなおしてください。";
+		}
 		return command.exec(storage_);
 	}
 	

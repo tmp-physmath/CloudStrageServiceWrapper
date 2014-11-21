@@ -28,13 +28,11 @@ public final class AuthPropertiesManager{
 		try{
 			file  = new File(this.get_currentpath() + "/authinfo");
 			if(!file.isDirectory()){
-				System.out.println(file.getAbsolutePath() + "ディレクトリが存在しないので作成します");
+				System.out.println(file.getAbsolutePath() + "ディレクトリが存在しないので、自動的に作成します");
 				file.mkdir();
-			}else{
-				System.out.println(file.getAbsolutePath() + "ディレクトリが存在します");
 			}
 		}catch(Exception e){
-			System.out.println("error!" + file.getAbsolutePath() + "にアクセスできません\n" + e.toString());
+			System.out.println("error: " + file.getAbsolutePath() + "にアクセスできません\n" + e.toString());
 		}
 		authinfo_dir_ = file;
 	}
@@ -63,7 +61,7 @@ public final class AuthPropertiesManager{
 		} catch (NullPointerException e){
 			e.printStackTrace();
 			return null;
-		} 
+		}
 		return null;
 	}
 	

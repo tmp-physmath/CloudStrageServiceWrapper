@@ -2,7 +2,6 @@
 package system;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import storage.virtualStorage.VirtualFile;
@@ -43,7 +42,7 @@ public class CommandParser {
 	 * @param argList
 	 * @return
 	 */
-	public IVirtualStorageCommand createCommand(ArrayList<String> argList){
+	public IVirtualStorageCommand createCommand(java.util.List<String> argList){
 		if (argList == null || argList.size() == 0) {
 			System.out.println("引数の数が違う");
 			return null;
