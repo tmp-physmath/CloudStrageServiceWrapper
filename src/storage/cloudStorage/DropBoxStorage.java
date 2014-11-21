@@ -21,6 +21,7 @@ import storage.IStorage;
 import storage.virtualStorage.VirtualFile;
 import system.AuthPropertiesManager;
 import system.IAuthorization;
+import system.Logger;
 
 import com.dropbox.core.DbxAccountInfo;
 import com.dropbox.core.DbxAppInfo;
@@ -57,7 +58,8 @@ public class DropBoxStorage implements IStorage {
 	}
 	
 	public DropBoxStorage(String userId) {
-		System.out.println("アカウント名:" + userId + "の認証を開始します。");
+		Logger.printLog("認証を開始します。アカウント名:" + userId);
+		Logger.startLocalTime("auth" + userId);
 		
 		this.userId = userId;
 		
@@ -80,7 +82,7 @@ public class DropBoxStorage implements IStorage {
 		} catch (Exception e) {
 			accessToken = null;
 			account = null;
-			e.printStackTrace();
+			Logger.printLog(e);
 		} finally {
 			//アクセストークンとアカウント情報どちらがnullならもう片方も自動的にnullになる
 			if (accessToken == null) {
@@ -91,9 +93,9 @@ public class DropBoxStorage implements IStorage {
 			}
 			
 			if (accessToken != null) {
-				System.out.println("認証に成功しました。アカウント名:" + userId);
+				Logger.printLog("認証に成功しました。アカウント名:" + userId + "(認証所要時間:" + Logger.getLocalTime("auth" + userId) + "ms)\n");
 			} else {
-				System.out.println("認証に失敗しました。アカウント名" + userId);
+				Logger.printLog("認証に失敗しました。アカウント名" + userId + "(認証所要時間:" + Logger.getLocalTime("auth" + userId) + "ms)\n");
 			}
 		}
 	}
@@ -128,8 +130,10 @@ public class DropBoxStorage implements IStorage {
 			//アップロード実行(すでにデータが存在した場合は上書きする)
 			getClient().uploadFile("/" + name, DbxWriteMode.force(), inputFile.length(), inputStream);
 		} catch (IOException e) {
+			Logger.printLog(e);
 			return IOEXCEPTION;
 		} catch (Exception e) {
+			Logger.printLog(e);
 			return EXCEPTION;
 		}
 		return SUCCESS_PROCESS;
@@ -154,8 +158,10 @@ public class DropBoxStorage implements IStorage {
 		try {
 			getClient().delete("/" + file.path_);
 		} catch (DbxException e) {
+			Logger.printLog(e);
 			return DBXEXCEPTION;
 		} catch (Exception e) {
+			Logger.printLog(e);
 			return EXCEPTION;
 		}
 		return SUCCESS_PROCESS;
@@ -172,8 +178,10 @@ public class DropBoxStorage implements IStorage {
 			//移動する
 			dbxEntry = getClient().move("/" + target.path_, "/" + name);
 		} catch (DbxException e) {
+			Logger.printLog(e);
 			return DBXEXCEPTION;
 		} catch (Exception e) {
+			Logger.printLog(e);
 			return EXCEPTION;
 		}
 		return dbxEntry != null ? SUCCESS_PROCESS : FAILED_PROCESS;
@@ -190,8 +198,10 @@ public class DropBoxStorage implements IStorage {
 		try (FileOutputStream outputStream = new FileOutputStream(distinct)) {
 			isSuccess = getClient().getFile("/" + target.path_, null, outputStream) != null;
 		} catch (IOException e) {
+			Logger.printLog(e);
 			return IOEXCEPTION;
 		} catch (Exception e) {
+			Logger.printLog(e);
 			return EXCEPTION;
 		}
 		return isSuccess ? SUCCESS_PROCESS : FAILED_PROCESS;
@@ -205,7 +215,7 @@ public class DropBoxStorage implements IStorage {
 			}
 			return account.quota.total - account.quota.normal;
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.printLog(e);
 			return 0;
 		}
 	}
@@ -242,6 +252,7 @@ public class DropBoxStorage implements IStorage {
 			}
 			return true;
 		} catch (Exception e) {
+			Logger.printLog(e);
 			return false;
 		}
 	}
@@ -307,6 +318,7 @@ public class DropBoxStorage implements IStorage {
 				}
 			}
 		} catch (DbxException e) {
+			Logger.printLog(e);
 			return fileList;
 		}
 		return fileList;
@@ -322,6 +334,7 @@ public class DropBoxStorage implements IStorage {
 		try {
 			metadata = getClient().getMetadata("/" + file.path_);
 		} catch (Exception e) {
+			Logger.printLog(e);
 			return false;
 		}
 		return metadata != null;
@@ -387,6 +400,7 @@ public class DropBoxStorage implements IStorage {
 				//URL発行
 				return  webAuth.start();
 			} catch (Exception e) {
+				Logger.printLog(e);
 				return null;
 			}
 		}
@@ -409,8 +423,10 @@ public class DropBoxStorage implements IStorage {
 				authFinish = new DbxWebAuthNoRedirect(getConfig(), appInfo).finish(accessToken);
 				accessToken = authFinish.accessToken;
 			} catch (DbxException e) {
+				Logger.printLog(e);
 				return false;
 			} catch (Exception e) {
+				Logger.printLog(e);
 				return false;
 			}
 			return true;
