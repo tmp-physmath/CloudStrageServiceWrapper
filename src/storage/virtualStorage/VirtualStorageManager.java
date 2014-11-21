@@ -1,6 +1,8 @@
 
 package storage.virtualStorage;
 
+import java.util.ArrayList;
+
 import storage.virtualStorage.command.IVirtualStorageCommand;
 import system.CommandParser;
 
@@ -19,8 +21,8 @@ public class VirtualStorageManager{
 	public void setVirtualStorage(VirtualStorage storage){
 		storage_ = storage;
 	}
-	public String operate(String[] args){
-		IVirtualStorageCommand command = CommandParser.getInstance().createCommand(args);
+	public String operate(ArrayList<String> argList){
+		IVirtualStorageCommand command = CommandParser.getInstance().createCommand(argList);
 		return command.exec(storage_);
 	}
 	

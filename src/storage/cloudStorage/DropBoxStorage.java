@@ -284,6 +284,11 @@ public class DropBoxStorage implements IStorage {
 
 	@Override
 	public List<IAuthorization> getAuthorization() {
+		//認証されていれば空のリストを返す
+		if (isAuthed()) {
+			return new ArrayList<>();
+		}
+		
 		ArrayList<IAuthorization> authList = new ArrayList<IAuthorization>();
 		authList.add(new DropBoxAuthorizationImpl());
 		return authList;

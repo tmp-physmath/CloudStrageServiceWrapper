@@ -2,6 +2,7 @@
 package system;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import storage.virtualStorage.command.Add;
 import storage.virtualStorage.command.IVirtualStorageCommand;
@@ -15,7 +16,7 @@ public class CommandParser {
 	static public CommandParser getInstance(){
 		return parser_;
 	}
-	public IVirtualStorageCommand createCommand(String[] command){
-		return new Add(new File(command[1]),command[2]);
+	public IVirtualStorageCommand createCommand(ArrayList<String> argList){
+		return new Add(new File(argList.get(1)),argList.get(2));
 	}
 }
