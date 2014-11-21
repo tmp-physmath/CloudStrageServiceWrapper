@@ -1,7 +1,7 @@
 package system;
 
 public class ErrorConst {
-	public static final int SUCCESS_PROCESS = 1;
+	public static final int SUCCESS_PROCESS = 0;
 	
 	public static final int FAILED_PROCESS = 1 << 1;
 
