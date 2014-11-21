@@ -8,8 +8,17 @@ public class List implements IVirtualStorageCommand{
 	public String exec(VirtualStorage target) {
 		
 		java.util.List<VirtualFile> fileList = target.fileList();
+		//nullの時は異常状態
+		if (fileList == null) {
+			if (!target.isAuthed()) {
+				return "認証に失敗したため処理をおこなえませんでした。";
+			} else {
+				return "処理中にエラーが発生しました。";
+			}
+		}
+		
 		if (fileList.size() == 0) {
-			return "ファイルがひとつも存在しないか処理中にエラーが発生しました。";
+			return "ファイルがひとつも存在しません。";
 		}
 		
 		//カンマ区切りでファイル名を格納

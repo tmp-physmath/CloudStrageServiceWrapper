@@ -7,7 +7,7 @@ import system.ErrorConst;
 public class VirtualStorageCommandUtil {
 	
 	/**
-	 * 共通のメッセージを取得する。Exception, 認証失敗、IOExceptionの場合だけ行います
+	 * 共通のメッセージを取得する。
 	 * @param bit
 	 * @return
 	 */
@@ -23,6 +23,18 @@ public class VirtualStorageCommandUtil {
 		
 		if ((bit & ErrorConst.IOEXCEPTION) != 0) {
 			sb.append("処理中に" + IOException.class.getCanonicalName() + "が発生しました。\n");
+		}
+		
+		if ((bit & ErrorConst.NOT_EXIST_ERROR) != 0) {
+			sb.append("対象ファイルがクラウド上に存在しません。\n");
+		}
+		
+		if ((bit & ErrorConst.NOT_FREE_SPACE) != 0) {
+			sb.append("クラウドに十分な空き容量がありません。\n");
+		}
+		
+		if ((bit & ErrorConst.TO_BIG_FILE_SIZE) != 0) {
+			sb.append("ファイルが大きすぎるためアップロードできません。\n");
 		}
 		
 		return sb.toString();

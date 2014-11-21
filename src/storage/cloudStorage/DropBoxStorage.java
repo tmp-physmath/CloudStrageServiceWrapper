@@ -207,16 +207,17 @@ public class DropBoxStorage implements IStorage {
 		return isSuccess ? SUCCESS_PROCESS : FAILED_PROCESS;
 	}
 
+	@SuppressWarnings("null")
 	@Override
 	public long getFreeSpace() {
 		try {
 			if (!assertAuth()) {
-				return 0;
+				return (Long) null;
 			}
 			return account.quota.total - account.quota.normal;
 		} catch (Exception e) {
 			Logger.printLog(e);
-			return 0;
+			return (Long) null;
 		}
 	}
 
@@ -304,7 +305,7 @@ public class DropBoxStorage implements IStorage {
 	public List<VirtualFile> fileList() {
 		//認証しているか確認
 		if (!assertAuth()) {
-			return new ArrayList<>();
+			return null;
 		}
 		//ファイルのリスト
 		ArrayList<VirtualFile> fileList = new ArrayList<>();
@@ -319,7 +320,7 @@ public class DropBoxStorage implements IStorage {
 			}
 		} catch (DbxException e) {
 			Logger.printLog(e);
-			return fileList;
+			return null;
 		}
 		return fileList;
 	}

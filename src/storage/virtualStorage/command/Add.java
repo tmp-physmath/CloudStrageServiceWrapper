@@ -11,6 +11,9 @@ public class Add implements IVirtualStorageCommand {
 	
 	String name;
 	
+	//20MB
+	public static final long MAX_UPLOAD_SIZE = 20_000_000;
+	
 	/**
 	 * @param file アップロードを行うファイル
 	 */
@@ -28,6 +31,11 @@ public class Add implements IVirtualStorageCommand {
 		
 		if (VirtualStorageCommandUtil.isInvalidFileName(name)) {
 			return "指定したファイル名は使えません。";
+		}
+		
+		//ファイルのサイズチェック
+		if (targetFile.length() > MAX_UPLOAD_SIZE) {
+			return "ファイルが大きすぎるためアップロードできません。";
 		}
 		
 		int resultCode = target.add(targetFile, name);
