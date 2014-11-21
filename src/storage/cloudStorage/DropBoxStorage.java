@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import storage.IStorage;
 import storage.virtualStorage.VirtualFile;
+import system.AuthPropertiesManager;
 import system.IAuthorization;
 
 import com.dropbox.core.DbxAccountInfo;
@@ -34,6 +35,8 @@ import com.dropbox.core.DbxWriteMode;
 import com.dropbox.core.http.HttpRequestor.Response;
 
 public class DropBoxStorage implements IStorage {
+	
+	public final static String STORAGE_NAME = "dropbox"; 
 	
 	private final static String APP_KEY = "y41d8ridamc9uqv";
 	private final static String APP_SECRET = "kx3i1y2vagtqzvj";
@@ -54,6 +57,7 @@ public class DropBoxStorage implements IStorage {
 	public DropBoxStorage(String userId) {
 		this.userId = userId;
 		
+		AuthPropertiesManager.getInstance().get(userId, "");
 	}
 	
 	@Override
