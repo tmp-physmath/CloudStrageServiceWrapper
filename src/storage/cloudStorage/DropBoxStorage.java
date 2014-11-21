@@ -35,15 +35,25 @@ import com.dropbox.core.http.HttpRequestor.Response;
 
 public class DropBoxStorage implements IStorage {
 	
-	final static String APP_KEY = "y41d8ridamc9uqv";
-	final static String APP_SECRET = "kx3i1y2vagtqzvj";
+	private final static String APP_KEY = "y41d8ridamc9uqv";
+	private final static String APP_SECRET = "kx3i1y2vagtqzvj";
 	
 	static String accessToken = "83aJRCgbahQAAAAAAAALtSkm-YNn13rYd2_UCxUz0etYZev6TuLYdFGII6tENQo_";
 	
 	String userId;
 	
+	DbxAccountInfo account;
+	
+	public static void main(String[] args) throws DbxException {
+		DropBoxStorage storage = new DropBoxStorage("nanmiken");
+		DbxAccountInfo info = storage.getClient().getAccountInfo();
+		System.out.println(info.userId);
+		System.out.println(info.toString());
+	}
+	
 	public DropBoxStorage(String userId) {
 		this.userId = userId;
+		
 	}
 	
 	@Override
@@ -128,6 +138,7 @@ public class DropBoxStorage implements IStorage {
 
 	@Override
 	public long getFreeSpace() {
+		
 		return 0;
 	}
 

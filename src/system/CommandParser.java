@@ -3,9 +3,16 @@ package system;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import storage.virtualStorage.VirtualFile;
 import storage.virtualStorage.command.Add;
+import storage.virtualStorage.command.Delete;
+import storage.virtualStorage.command.Exist;
 import storage.virtualStorage.command.IVirtualStorageCommand;
+import storage.virtualStorage.command.List;
+import storage.virtualStorage.command.Pull;
+import storage.virtualStorage.command.Rename;
 
 
 public class CommandParser {
@@ -16,7 +23,53 @@ public class CommandParser {
 	static public CommandParser getInstance(){
 		return parser_;
 	}
+
+	static HashMap<String, Integer> cmdMap = new HashMap<String, Integer>();
+	{
+		cmdMap.put("add", 3);
+		cmdMap.put("delete", 2);
+		cmdMap.put("pull", 3);
+		cmdMap.put("exist", 2);
+		cmdMap.put("list", 1);
+		cmdMap.put("rename", 3);
+	}
+	
+	
+	/**
+	 * 操作クラスのインスタンスを返します。第一引数が不正または、ない場合はnullを返します。
+	 * @param argList
+	 * @return
+	 */
 	public IVirtualStorageCommand createCommand(ArrayList<String> argList){
-		return new Add(new File(argList.get(1)),argList.get(2));
+		if (argList.size() == 0) {
+			return null;
+		}
+		
+		//コマンド名
+		String cmdName = argList.get(0);
+		
+		//引数の数
+		int size = cmdMap.get(cmdName);
+		//引数の数があってなければnullを返す
+		if (size != argList.size()) {
+			return null;
+		}
+		
+		switch (cmdName) {
+		case "add":
+			return new Add(new File(argList.get(1)), argList.get(2));
+		case "delete":
+			return new Delete(new VirtualFile(argList.get(1)));
+		case "pull":
+			return new Pull(new File(argList.get(1)), new VirtualFile(argList.get(2)));
+		case "exist":
+			return new Exist(new VirtualFile(argList.get(1)));
+		case "list":
+			return new List();
+		case "rename":
+			return new Rename(new VirtualFile(argList.get(1)), argList.get(2));
+		default:
+			return null;
+		}
 	}
 }

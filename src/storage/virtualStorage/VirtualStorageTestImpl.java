@@ -42,5 +42,15 @@ public class VirtualStorageTestImpl extends VirtualStorage{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public boolean exist(VirtualFile file) {
+		for(IStorage storage : storageList_){
+			if(storage.exist(file)){
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

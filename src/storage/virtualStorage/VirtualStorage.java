@@ -7,10 +7,7 @@ import java.util.List;
 import storage.IStorage;
 
 public abstract class VirtualStorage  implements IStorage{
-	protected List<IStorage> storageList_;
-	VirtualStorage(){
-		storageList_ = new ArrayList<IStorage>();
-	}
+	protected List<IStorage> storageList_ = new ArrayList<IStorage>();
 	@Override
 	public boolean isAuthed(){
 		for(IStorage storage : storageList_){
@@ -37,13 +34,4 @@ public abstract class VirtualStorage  implements IStorage{
 		return ret;
 	}
 
-	@Override
-	public boolean exist(VirtualFile file) {
-		for(IStorage storage : storageList_){
-			if(storage.exist(file)){
-				return true;
-			}
-		}
-		return false;
-	}
 }
