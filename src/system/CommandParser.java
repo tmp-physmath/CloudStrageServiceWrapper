@@ -9,6 +9,7 @@ import storage.virtualStorage.VirtualFile;
 import storage.virtualStorage.command.Add;
 import storage.virtualStorage.command.Delete;
 import storage.virtualStorage.command.Exist;
+import storage.virtualStorage.command.FreeSpace;
 import storage.virtualStorage.command.IVirtualStorageCommand;
 import storage.virtualStorage.command.List;
 import storage.virtualStorage.command.Pull;
@@ -33,6 +34,7 @@ public class CommandParser {
 		cmdMap.put("exist", 2);
 		cmdMap.put("list", 1);
 		cmdMap.put("rename", 3);
+		cmdMap.put("freespace", 1);
 	}
 	
 	
@@ -42,7 +44,8 @@ public class CommandParser {
 	 * @return
 	 */
 	public IVirtualStorageCommand createCommand(ArrayList<String> argList){
-		if (argList.size() == 0) {
+		if (argList == null || argList.size() == 0) {
+			System.out.println("引数の数が違う");
 			return null;
 		}
 		
@@ -53,6 +56,7 @@ public class CommandParser {
 		int size = cmdMap.get(cmdName);
 		//引数の数があってなければnullを返す
 		if (size != argList.size()) {
+			System.out.println("引数の数が違う２");
 			return null;
 		}
 		
@@ -69,6 +73,8 @@ public class CommandParser {
 			return new List();
 		case "rename":
 			return new Rename(new VirtualFile(argList.get(1)), argList.get(2));
+		case "freespace":
+			return new FreeSpace();
 		default:
 			return null;
 		}

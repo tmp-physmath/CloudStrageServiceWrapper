@@ -203,7 +203,7 @@ public class DropBoxStorage implements IStorage {
 			if (!assertAuth()) {
 				return 0;
 			}
-			return account.quota.normal;
+			return account.quota.total - account.quota.normal;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 0;
