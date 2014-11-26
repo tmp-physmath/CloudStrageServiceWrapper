@@ -21,7 +21,7 @@ public class VirtualStorageFactory {
 	
 	public VirtualStorage create(File config) throws Exception{
 		VirtualStorage vstorage = null;
-		if(!config.exists()  || !config.canRead()){
+		if(!config.isFile()  || !config.canRead()){
 			System.out.println("コンフィグファイル\n"
 					+ config.getAbsolutePath()
 					+ "\nが存在しない、あるいは読み込む権限がありません。");

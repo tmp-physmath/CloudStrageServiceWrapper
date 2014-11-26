@@ -20,7 +20,7 @@ public final class AuthPropertiesManager{
 	}
 	
 	boolean existAuthInfoDir(){
-		return authinfo_dir_ != null && authinfo_dir_.exists();
+		return authinfo_dir_ != null && authinfo_dir_.isDirectory();
 	}
 	
 	private AuthPropertiesManager(){
@@ -28,11 +28,13 @@ public final class AuthPropertiesManager{
 		try{
 			file  = new File(this.get_currentpath() + "/authinfo");
 			if(!file.isDirectory()){
-				System.out.println(file.getAbsolutePath() + "ディレクトリが存在しないので、自動的に作成します");
-				file.mkdir();
+				Logger.printLog(file.getAbsolutePath() + "認証情報を格納するディレクトリが存在しないので、自動的に作成します");
+				file.mkdirs();
 			}
 		}catch(Exception e){
-			System.out.println("error: " + file.getAbsolutePath() + "にアクセスできません\n" + e.toString());
+			System.out.println("error: " + file.getAbsolutePath() + "にアクセスできません。強制終了します");
+			Logger.printLog(e.toString());
+			System.exit(0);
 		}
 		authinfo_dir_ = file;
 	}
@@ -83,21 +85,20 @@ public final class AuthPropertiesManager{
 			}
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			Logger.printLog(e1);
 			return false;
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			Logger.printLog(e1);
 			return false;
 		} catch(NullPointerException e){
-			e.printStackTrace();
+			Logger.printLog(e);
 			return false;
 		}
 		System.out.println("error! : in AuthPropertiesManager.set()");
 		return false;
 	}
 	private String get_currentpath(){
-
 		String dirPath = System.getProperty("user.dir");
 		return dirPath;
 	}

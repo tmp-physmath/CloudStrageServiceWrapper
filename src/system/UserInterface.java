@@ -32,8 +32,6 @@ public class UserInterface<T> {
 			System.out.println("異常終了しました");
 			Logger.printLog(e);
 		}
-		
-		
 		if(vstorage == null){
 			return;
 		}
@@ -66,6 +64,4 @@ public class UserInterface<T> {
 		}
 		return new File(file_name);
 	}
-	
-
 }
