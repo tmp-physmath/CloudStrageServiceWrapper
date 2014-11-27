@@ -1,4 +1,4 @@
-//package storage.cloudStorage;
+package storage.cloudStorage;
 //
 //import java.io.File;
 //import java.io.FileInputStream;
@@ -12,7 +12,7 @@
 //import storage.virtualStorage.VirtualFile;
 //import system.IAuthorization;
 //
-//public class LocalStorage implements IStorage {
+public class LocalStorage {
 //	private String dir_;
 //	public LocalStorage(String dir){
 //		dir_ = dir;
@@ -103,4 +103,4 @@
 //		return null;
 //	}
 //
-//}
+}

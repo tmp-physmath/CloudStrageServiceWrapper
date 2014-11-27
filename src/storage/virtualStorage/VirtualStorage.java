@@ -30,7 +30,11 @@ public abstract class VirtualStorage  implements IStorage{
 	public List<VirtualFile> fileList() {
 		List<VirtualFile> ret = new ArrayList<VirtualFile>();
 		for(IStorage storage : storageList_){
-			ret.addAll(storage.fileList());
+			if (storage.fileList() != null) {
+				ret.addAll(storage.fileList());
+			} else {
+				return null;
+			}
 		}
 		return ret;
 	}	

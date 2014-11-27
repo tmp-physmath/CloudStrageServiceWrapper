@@ -44,58 +44,50 @@ public class DropBoxStorage implements IStorage {
 	private final static String APP_KEY = "y41d8ridamc9uqv";
 	private final static String APP_SECRET = "kx3i1y2vagtqzvj";
 	
-	static String accessToken = "83aJRCgbahQAAAAAAAALtSkm-YNn13rYd2_UCxUz0etYZev6TuLYdFGII6tENQo_";
+	String accessToken = null;
 	
 	String userId;
 	
 	DbxAccountInfo account = null;
 	
 	public static void main(String[] args) throws DbxException {
-		DropBoxStorage storage = new DropBoxStorage("nanmiken");
+		DropBoxStorage storage = new DropBoxStorage("ナミケン");
 		DbxAccountInfo info = storage.getClient().getAccountInfo();
 		System.out.println(info.userId);
 		System.out.println(info.toString());
 	}
 	
 	public DropBoxStorage(String userId) {
-		Logger.printLog("認証を開始します。アカウント名:" + userId);
+		System.out.println("oauth2認証を開始します。アカウント名:" + userId);
 		Logger.startLocalTime("auth" + userId);
 		
 		this.userId = userId;
 		
 		try {
+			//認証情報を初期化する
+			accessToken = null;
+			account = null;
+			
 			//プロパティ情報を取得
 			Map<String, String> map = AuthPropertiesManager.getInstance().get(userId, STORAGE_NAME);
 			
 			//マップがとれなければ初回認証を行う必要があるのでnullにしておく
 			if (map == null) {
-				accessToken = null;
+				Logger.printLog("not found auth map");
 				return;
 			}
-			//アクセストークンをセットする(nullでも問題なし)
-			accessToken = map.get("accessToken");
 			
-			//アクセストークンが存在した時はアクセストークンが正しいか調べる
-			if (accessToken != null) {
-				setAccountInfo();
-			}
+			//アカウント情報とアクセストークンをセットする
+			setAccountInfo(map.get("accessToken"));
 		} catch (Exception e) {
 			accessToken = null;
 			account = null;
 			Logger.printLog(e);
 		} finally {
-			//アクセストークンとアカウント情報どちらがnullならもう片方も自動的にnullになる
-			if (accessToken == null) {
-				account = null;
-			}
-			if (account == null) {
-				accessToken = null;
-			}
-			
-			if (accessToken != null) {
-				Logger.printLog("認証に成功しました。アカウント名:" + userId + "(認証所要時間:" + Logger.getLocalTime("auth" + userId) + "ms)\n");
+			if (isAuthed()) {
+				System.out.println("oauth2認証に成功しました。アカウント名:" + userId + "(認証所要時間:" + Logger.getLocalTime("auth" + userId) + "ms)\n");
 			} else {
-				Logger.printLog("認証に失敗しました。アカウント名" + userId + "(認証所要時間:" + Logger.getLocalTime("auth" + userId) + "ms)\n");
+				System.out.println("oauth2認証に失敗しました。アカウント名" + userId + "(認証所要時間:" + Logger.getLocalTime("auth" + userId) + "ms)\n");
 			}
 		}
 	}
@@ -105,9 +97,18 @@ public class DropBoxStorage implements IStorage {
 	 * 認証が成功しない原因は「アクセストークンが間違っている」「ネットワークに接続していない」などが挙げられます。
 	 * 
 	 * 認証に失敗したときはアカウント情報とアクセストークンの値はnullになります。
+	 * @param accessToken 
 	 * @throws DbxException
 	 */
-	protected void setAccountInfo() throws DbxException {
+	protected void setAccountInfo(String accessToken) throws DbxException {
+		//アクセストークンがnullの時は認証できないのでnullをセットする
+		if (accessToken == null) {
+			Logger.printLog("auth file don't has accessToken");
+			account = null;
+		}
+		//アクセストークンをセットする
+		this.accessToken = accessToken; 
+		
 		//一旦利用者情報を取得してステータスコードが200でないなら認証されていないとする
 		DbxClient client = getClient();
 		Handle handle = new Handle();
@@ -116,6 +117,11 @@ public class DropBoxStorage implements IStorage {
 		//認証に成功していればアカウント情報をセットする
 		if (handle.isAuth() && accountInfo != null) {
 			account = accountInfo;
+		} else {
+			Logger.printLog("accessToken is invailed");
+			//失敗していればnullにする
+			accountInfo = null;
+			accessToken = null;
 		}
 	}
 	
@@ -231,6 +237,7 @@ public class DropBoxStorage implements IStorage {
 		try {
 			//アクセストークンがnullの時は強制的に認証されていないとする
 			if (accessToken == null || account == null) {
+				Logger.printLog("accessToken or accountInfo is null");
 				return false;
 			}
 			
@@ -249,6 +256,7 @@ public class DropBoxStorage implements IStorage {
 			
 			//ユーザのアカウントが正しいか確認
 			if (!account.displayName.equals(userId)) {
+				Logger.printLog("user name is wrong. accountInfo:" +  account.displayName + ".  input:" + userId);
 				return false;
 			}
 			return true;
@@ -407,30 +415,42 @@ public class DropBoxStorage implements IStorage {
 		}
 
 		@Override
-		public boolean auth(String accessToken) {
-			if (accessToken == null) {
+		public boolean auth(String code) {
+			if (code == null) {
 				return false;
 			}
 			
 			try {
-				//アクセストークンの情報をセットする
-				HashMap<String, String> map = new HashMap<String, String>();
-				map.put("accessToken", accessToken);
-				AuthPropertiesManager.getInstance().set(userId, STORAGE_NAME, map);
 				
 				//認証を行う
 				DbxAppInfo appInfo = new DbxAppInfo(APP_KEY, APP_SECRET);
 				DbxAuthFinish authFinish;
-				authFinish = new DbxWebAuthNoRedirect(getConfig(), appInfo).finish(accessToken);
-				accessToken = authFinish.accessToken;
+				authFinish = new DbxWebAuthNoRedirect(getConfig(), appInfo).finish(code);
+				
+				//アクセストークンの情報をファイルにセットする
+				HashMap<String, String> map = new HashMap<String, String>();
+				map.put("accessToken", authFinish.accessToken);
+				AuthPropertiesManager.getInstance().set(userId, STORAGE_NAME, map);
+				
+				//アカウントの情報をフィールドにセットする
+				setAccountInfo(authFinish.accessToken);
 			} catch (DbxException e) {
 				Logger.printLog(e);
 				return false;
 			} catch (Exception e) {
 				Logger.printLog(e);
 				return false;
+			} 
+			if (isAuthed()) {
+				return true;
+			} else {
+				return false;
 			}
-			return true;
+		}
+
+		@Override
+		public String getUserId() {
+			return userId;
 		}
 		
 	}
