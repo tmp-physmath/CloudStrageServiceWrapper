@@ -49,13 +49,13 @@ public class DropBoxStorage implements IStorage {
 	String userId;
 	
 	DbxAccountInfo account = null;
-	
-	public static void main(String[] args) throws DbxException {
-		DropBoxStorage storage = new DropBoxStorage("ナミケン");
-		DbxAccountInfo info = storage.getClient().getAccountInfo();
-		System.out.println(info.userId);
-		System.out.println(info.toString());
-	}
+//	
+//	public static void main(String[] args) throws DbxException {
+//		DropBoxStorage storage = new DropBoxStorage("ナミケン");
+//		DbxAccountInfo info = storage.getClient().getAccountInfo();
+//		System.out.println(info.userId);
+//		System.out.println(info.toString());
+//	}
 	
 	public DropBoxStorage(String userId) {
 		System.out.println("oauth2認証を開始します。アカウント名:" + userId);
@@ -213,17 +213,16 @@ public class DropBoxStorage implements IStorage {
 		return isSuccess ? SUCCESS_PROCESS : FAILED_PROCESS;
 	}
 
-	@SuppressWarnings("null")
 	@Override
 	public long getFreeSpace() {
 		try {
 			if (!assertAuth()) {
-				return (Long) null;
+				return -1;
 			}
 			return account.quota.total - account.quota.normal;
 		} catch (Exception e) {
 			Logger.printLog(e);
-			return (Long) null;
+			return -1;
 		}
 	}
 

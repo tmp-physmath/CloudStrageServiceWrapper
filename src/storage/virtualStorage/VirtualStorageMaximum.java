@@ -7,6 +7,7 @@ import java.util.List;
 import storage.IStorage;
 import system.ErrorConst;
 import system.IAuthorization;
+import system.Logger;
 
 public class VirtualStorageMaximum extends VirtualStorage{
 	
@@ -17,6 +18,8 @@ public class VirtualStorageMaximum extends VirtualStorage{
 	@Override
 	public int add(File file, String name) {
 		IStorage useStorage = null;
+		//TODO リストのサイズ取得
+		
 		
 		//空き容量が最大のものを調べる
 		long maxFree = 0;
@@ -38,6 +41,23 @@ public class VirtualStorageMaximum extends VirtualStorage{
 			return ErrorConst.TO_BIG_FILE_SIZE;
 		}
 		
+		
+		//すでに存在した場合は削除する
+		IStorage storage = getStorageByVirtualFile(new VirtualFile(name));
+		if (storage != null) {
+			int deleteResult = ErrorConst.SUCCESS_PROCESS;
+			Logger.printLog("元から同名ファイルが存在したため削除します。");
+			deleteResult = storage.delete(new VirtualFile(name));
+
+			//削除が失敗した場合はここで終了とする
+			if (deleteResult != ErrorConst.SUCCESS_PROCESS) {
+				return deleteResult;
+			}
+		} else {
+			Logger.printLog("同名ファイルは存在しません");
+		}
+		
+		//ファイルを追加する
 		return useStorage.add(file, name);
 	}
 
@@ -79,6 +99,9 @@ public class VirtualStorageMaximum extends VirtualStorage{
 		long sumSize = 0;
 		
 		for (IStorage storage : storageList_) {
+			if (storage.getFreeSpace() == -1) {
+				return -1;
+			}
 			sumSize += storage.getFreeSpace();
 		}
 		return sumSize;

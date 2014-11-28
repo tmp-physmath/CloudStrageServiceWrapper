@@ -31,7 +31,7 @@ public class Pull implements IVirtualStorageCommand{
 		}
 		
 		//ダウンロード先にフォルダが存在しなければ作成する
-		if (!localFile.getParentFile().mkdirs()) {
+		if (!localFile.getParentFile().isDirectory() && !localFile.getParentFile().mkdirs()) {
 			return "ローカルのディレクトリ作成中にエラーが発生しました。";
 		}
 		//ダウンロード実行
@@ -41,7 +41,7 @@ public class Pull implements IVirtualStorageCommand{
 		//共通コメントを設定する
 		sb.append(VirtualStorageCommandUtil.getCommonCommand(result));
 		
-		if ((result & ErrorConst.SUCCESS_PROCESS) != 0) {
+		if (result == ErrorConst.SUCCESS_PROCESS) {
 			sb.append("ダウンロードが完了しました。");
 		} else {
 			sb.append("ダウンロードが失敗しました。");

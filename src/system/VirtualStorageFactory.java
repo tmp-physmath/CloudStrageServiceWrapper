@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import storage.IStorage;
@@ -41,18 +42,23 @@ public class VirtualStorageFactory {
 				
 				csvData.remove(0);
 				//IStorageインスタンスの生成
-				List<IStorage> storage_list = new ArrayList<IStorage>();
+				List<IStorage> storage_list = Collections.synchronizedList(new ArrayList<IStorage>());
 				int index = 0;
 				for ( String[] row : csvData ) {
 					index++;
 					if(row.length != 2){
 						System.out.println("コンフィグファイルの" + index + "行目が不正です。この行を無視します");
 					} else if(row[0].equals("dropbox")){
-						storage_list.add(new DropBoxStorage(row[1]));
+						CloudStorageInstance thread = new CloudStorageInstance(this, row[1], storage_list);
+						thread.start();
 					} else {
 						System.out.println(index + "行目のクラウドストレージサービス : " + row[0] + " は未サポートです。この行を無視します。");
 					}
 				}
+				
+				// 子の終了を待つ
+				waitSync();
+				
 				if(vstorage_type.equals("maximum")){
 					vstorage = new VirtualStorageMaximum(storage_list);
 				} else {
@@ -67,8 +73,73 @@ public class VirtualStorageFactory {
 		
 		return vstorage;
 	}
+
+	//アクティブスレッド数
+	volatile int activeThreadCount = 0;
+	
+	/**
+	 * 小スレッドが終了するまで待ちます。必ずメインスレッドで呼び出してください
+	 */
+	protected synchronized void waitSync() {
+		// 同期オブジェクトの待ち合わせ（子がすべて終了するまで待つ）
+		while (activeThreadCount > 0) {
+			try {
+				wait();
+			} catch (Exception e) {
+				Logger.printLog(e);
+				break;
+			}
+		}
+	}
+	
+	/**
+	 * 小スレッドの追加処理
+	 */
+	public synchronized void addSync() {
+		// 同期オブジェクトの追加
+		activeThreadCount++;
+	}
+	
+	/**
+	 * 子スレッドの削除処理
+	 */
+	public synchronized void delSync() {
+		// 同期オブジェクトの削除
+		activeThreadCount--;
+		try {
+			notify();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
 	static public VirtualStorageFactory getInstance(){
 		return factory_;
 	}
 	
+	/**
+	 * クラウド・ストレージインスタンスを作成する
+	 */
+	class CloudStorageInstance extends Thread {
+		VirtualStorageFactory vs;
+		String userId;
+		List<IStorage> storage_list;
+		
+		public CloudStorageInstance(VirtualStorageFactory vs, String userId, List<IStorage> storage_list) {
+			vs.addSync();
+			this.vs = vs;
+			this.userId = userId;
+			this.storage_list = storage_list;
+		}
+		
+		
+		@Override
+		public void run() {
+			try {
+				storage_list.add(new DropBoxStorage(userId));
+			} finally {
+				vs.delSync();
+			}
+		}
+	}
 }

@@ -10,9 +10,9 @@ public class FreeSpace implements IVirtualStorageCommand {
 	@Override
 	public String exec(VirtualStorage target) {
 		try {
-			long freeSpace = target.getFreeSpace();
+			long freeSpace =target.getFreeSpace();
 			//nullの時は異常状態
-			if (freeSpace == (Long)null) {
+			if (freeSpace == -1) {
 				if (!target.isAuthed()) {
 					return "認証に失敗したため処理をおこなえませんでした。";
 				} else {

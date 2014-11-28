@@ -1,6 +1,8 @@
 package system;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Logger {
 	
@@ -29,9 +31,7 @@ public class Logger {
 	}
 	
 	//局所的な時間計測の開始時刻を設定する
-	private static HashMap<String, Long> localTimeMap = new HashMap<String, Long>();
-	
-	
+	private static Map<String, Long> localTimeMap =  Collections.synchronizedMap(new HashMap<String, Long>());
 	
 	/**
 	 * 局所的な時間計測を開始します。 <br />
