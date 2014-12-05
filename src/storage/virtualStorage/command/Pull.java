@@ -31,9 +31,12 @@ public class Pull implements IVirtualStorageCommand{
 		}
 		
 		//ダウンロード先にフォルダが存在しなければ作成する
-		if (!localFile.getParentFile().isDirectory() && !localFile.getParentFile().mkdirs()) {
-			return "ローカルのディレクトリ作成中にエラーが発生しました。";
+		if (localFile.getParentFile() != null) {
+			if (!localFile.getParentFile().isDirectory() && !localFile.getParentFile().mkdirs()) {
+				return "ローカルのディレクトリ作成中にエラーが発生しました。";
+			}
 		}
+		
 		//ダウンロード実行
 		int result = target.download(file, localFile);
 		
