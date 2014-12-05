@@ -21,7 +21,7 @@ public class Exist implements IVirtualStorageCommand{
 		if (exist) {
 			return "ファイルは存在します。";
 		} else {
-			return "ファイルが存在しない、もしくは処理中にエラーが発生しました。";
+			return "ファイルが存在しません。";
 		}
 	}
 
