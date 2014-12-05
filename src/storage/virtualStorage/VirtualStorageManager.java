@@ -26,7 +26,7 @@ public class VirtualStorageManager{
 		if(command == null){
 			return "コマンド書式が間違っています。入力し直しなおしてください。";
 		}
-		if(!storage_.isAuthed()){
+		if(!argList.get(0).equals("auth") && !storage_.isAuthed()){
 			return "認証に失敗しました。初回認証が行われていない、あるいはネットワークに接続されていません。";
 		}
 		return command.exec(storage_);

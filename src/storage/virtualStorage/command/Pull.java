@@ -40,10 +40,6 @@ public class Pull implements IVirtualStorageCommand{
 			Logger.printLog("ParentFile is null");
 		}
 		
-		if (!localFile.canWrite()) {
-			return "指定した場所にはダウンロードできません。";
-		}
-		
 		//ダウンロード実行
 		int result = target.download(file, localFile);
 		
