@@ -55,10 +55,8 @@ public class VirtualStorageFactory {
 						System.out.println(index + "行目のクラウドストレージサービス : " + row[0] + " は未サポートです。この行を無視します。");
 					}
 				}
-				
 				// 子の終了を待つ
 				waitSync();
-				
 				if(vstorage_type.equals("maximum")){
 					vstorage = new VirtualStorageMaximum(storage_list);
 				} else {
@@ -90,6 +88,7 @@ public class VirtualStorageFactory {
 				break;
 			}
 		}
+		System.out.println("");
 	}
 	
 	/**

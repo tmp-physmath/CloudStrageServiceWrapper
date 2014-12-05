@@ -39,7 +39,7 @@ public class UserInterface<T> {
 		String result = VirtualStorageManager.getInstance().operate(args_list);
 		System.out.println(result);
 		
-		Logger.printLog("実行時間:" + Logger.getTotalTime() + "ms");
+		System.out.println("実行時間:" + Logger.getTotalTime() + "ms");
 	}
 	
 	public static LinkedList<String> StringToLinkedList (String[] args){

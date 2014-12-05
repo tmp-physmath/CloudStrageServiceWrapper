@@ -46,7 +46,7 @@ public class VirtualStorageMaximum extends VirtualStorage{
 		IStorage storage = getStorageByVirtualFile(new VirtualFile(name));
 		if (storage != null) {
 			int deleteResult = ErrorConst.SUCCESS_PROCESS;
-			Logger.printLog("元から同名ファイルが存在したため削除します。");
+			System.out.println("クラウド上に同名ファイルが存在したため、元のデータを削除します。");
 			deleteResult = storage.delete(new VirtualFile(name));
 
 			//削除が失敗した場合はここで終了とする

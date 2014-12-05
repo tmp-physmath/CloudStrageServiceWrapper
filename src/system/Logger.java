@@ -62,11 +62,14 @@ public class Logger {
 	}
 	
 	public static void printLog(String log) {
-		System.out.println(log);
+//		System.out.println(log);
 	}
 
 	public static void printLog(Throwable e) {
-		e.printStackTrace();
+		System.err.println("====Exception====");
+		System.err.println(e.getClass().getCanonicalName() + "が発生しました。");
+		System.err.println("====Exception====");
+//		e.printStackTrace();
 	}
 	
 	

@@ -85,9 +85,9 @@ public class DropBoxStorage implements IStorage {
 			Logger.printLog(e);
 		} finally {
 			if (isAuthed()) {
-				System.out.println("oauth2認証に成功しました。アカウント名:" + userId + "(認証所要時間:" + Logger.getLocalTime("auth" + userId) + "ms)\n");
+				System.out.println("oauth2認証に成功しました。アカウント名:" + userId + "(認証所要時間:" + Logger.getLocalTime("auth" + userId) + "ms)");
 			} else {
-				System.out.println("oauth2認証に失敗しました。アカウント名" + userId + "(認証所要時間:" + Logger.getLocalTime("auth" + userId) + "ms)\n");
+				System.out.println("oauth2認証に失敗しました。アカウント名" + userId + "(認証所要時間:" + Logger.getLocalTime("auth" + userId) + "ms)");
 			}
 		}
 	}

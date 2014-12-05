@@ -32,8 +32,8 @@ public final class AuthPropertiesManager{
 				file.mkdirs();
 			}
 		}catch(Exception e){
+			Logger.printLog(e);
 			System.out.println("error: " + file.getAbsolutePath() + "にアクセスできません。強制終了します");
-			Logger.printLog(e.toString());
 			System.exit(0);
 		}
 		authinfo_dir_ = file;
