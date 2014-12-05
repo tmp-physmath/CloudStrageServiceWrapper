@@ -5,6 +5,7 @@ import java.io.File;
 import storage.virtualStorage.VirtualFile;
 import storage.virtualStorage.VirtualStorage;
 import system.ErrorConst;
+import system.Logger;
 
 public class Pull implements IVirtualStorageCommand{
 	File localFile;
@@ -35,6 +36,12 @@ public class Pull implements IVirtualStorageCommand{
 			if (!localFile.getParentFile().isDirectory() && !localFile.getParentFile().mkdirs()) {
 				return "ローカルのディレクトリ作成中にエラーが発生しました。";
 			}
+		} else {
+			Logger.printLog("ParentFile is null");
+		}
+		
+		if (!localFile.canWrite()) {
+			return "指定した場所にはダウンロードできません。";
 		}
 		
 		//ダウンロード実行
